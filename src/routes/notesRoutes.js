@@ -1,4 +1,5 @@
 import { Router } from 'express';
+
 import {
   getAllNotes,
   getNoteById,
@@ -6,6 +7,7 @@ import {
   updateNote,
   deleteNote,
 } from '../controllers/notesController.js';
+
 import {
   getAllNotesSchema,
   noteIdSchema,
@@ -13,12 +15,15 @@ import {
   updateNoteSchema,
 } from '../validations/notesValidation.js';
 
+import { authenticate } from '../middleware/authenticate.js';
+
 const notesRouter = Router();
 
-notesRouter.get('/notes', getAllNotesSchema, getAllNotes);
-notesRouter.get('/notes/:noteId', noteIdSchema, getNoteById);
-notesRouter.post('/notes', createNoteSchema, createNote);
-notesRouter.patch('/notes/:noteId', updateNoteSchema, updateNote);
-notesRouter.delete('/notes/:noteId', noteIdSchema, deleteNote);
+notesRouter.use(authenticate);
 
+notesRouter.get('/', getAllNotesSchema, getAllNotes);
+notesRouter.get('/:noteId', noteIdSchema, getNoteById);
+notesRouter.post('/', createNoteSchema, createNote);
+notesRouter.patch('/:noteId', updateNoteSchema, updateNote);
+notesRouter.delete('/:noteId', noteIdSchema, deleteNote);
 export default notesRouter;
