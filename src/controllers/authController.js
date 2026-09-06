@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 import createHttpError from 'http-errors';
+
 import { User } from '../models/user.js';
 import { Session } from '../models/session.js';
 import { createSession, setSessionCookies } from '../services/auth.js';
@@ -51,6 +52,12 @@ export const refreshUserSession = async (req, res) => {
   }
 
   if (session.refreshTokenValidUntil < new Date()) {
+    await Session.deleteOne({ _id: sessionId });
+
+    res.clearCookie('sessionId');
+    res.clearCookie('accessToken');
+    res.clearCookie('refreshToken');
+
     throw createHttpError(401, 'Session token expired');
   }
 

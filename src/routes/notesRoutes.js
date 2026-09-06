@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { celebrate } from 'celebrate';
 
 import {
   getAllNotes,
@@ -21,9 +22,10 @@ const notesRouter = Router();
 
 notesRouter.use(authenticate);
 
-notesRouter.get('/', getAllNotesSchema, getAllNotes);
-notesRouter.get('/:noteId', noteIdSchema, getNoteById);
-notesRouter.post('/', createNoteSchema, createNote);
-notesRouter.patch('/:noteId', updateNoteSchema, updateNote);
-notesRouter.delete('/:noteId', noteIdSchema, deleteNote);
+notesRouter.get('/notes', celebrate(getAllNotesSchema), getAllNotes);
+notesRouter.get('/notes/:noteId', celebrate(noteIdSchema), getNoteById);
+notesRouter.post('/notes', celebrate(createNoteSchema), createNote);
+notesRouter.patch('/notes/:noteId', celebrate(updateNoteSchema), updateNote);
+notesRouter.delete('/notes/:noteId', celebrate(noteIdSchema), deleteNote);
+
 export default notesRouter;
